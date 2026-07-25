@@ -19,25 +19,6 @@ export const auth = betterAuth({
     autoSignIn: false,
     minPasswordLength: 7,
   },
-  user: {
-    additionalFields: {
-      daerahId: {
-        type: "number",
-        required: true,
-        fieldName: "daerahId",
-      },
-      desaId: {
-        type: "number",
-        required: false,
-        fieldName: "desaId",
-      },
-      kelompokId: {
-        type: "number",
-        required: false,
-        fieldName: "kelompokId",
-      },
-    },
-  },
   advanced: {
     database: {
       generateId: false,
