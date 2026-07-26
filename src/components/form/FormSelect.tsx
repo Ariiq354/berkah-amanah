@@ -1,16 +1,20 @@
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { Select, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
+import { useFieldContext } from "./context";
 import { FormBase, type FormControlProps } from "./FormBase";
-import { useFieldContext } from "./hooks";
 
-export function FormSelect({ children, ...props }: FormControlProps & { children: ReactNode }) {
+export type FormSelectProps = FormControlProps & {
+  children: ReactNode;
+} & Omit<ComponentProps<typeof Select>, "value" | "onValueChange">;
+
+export function FormSelect({ children, label, description, ...props }: FormSelectProps) {
   const field = useFieldContext<string | null>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
-    <FormBase {...props}>
-      <Select onValueChange={(e) => field.handleChange(e)} value={field.state.value}>
+    <FormBase label={label} description={description}>
+      <Select onValueChange={(e: any) => field.handleChange(e)} value={field.state.value ?? undefined} {...props}>
         <SelectTrigger aria-invalid={isInvalid} id={field.name} onBlur={field.handleBlur}>
           <SelectValue />
         </SelectTrigger>

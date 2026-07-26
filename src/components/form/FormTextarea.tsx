@@ -1,13 +1,18 @@
-import { Textarea } from "../ui/textarea";
-import { FormBase, type FormControlProps } from "./FormBase";
-import { useFieldContext } from "./hooks";
+import type { ComponentProps } from "react";
 
-export function FormTextarea(props: FormControlProps) {
+import { Textarea } from "../ui/textarea";
+import { useFieldContext } from "./context";
+import { FormBase, type FormControlProps } from "./FormBase";
+
+export type FormTextareaProps = FormControlProps &
+  Omit<ComponentProps<typeof Textarea>, "id" | "name" | "value" | "onBlur" | "onChange" | "aria-invalid">;
+
+export function FormTextarea({ label, description, ...props }: FormTextareaProps) {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
-    <FormBase {...props}>
+    <FormBase label={label} description={description}>
       <Textarea
         id={field.name}
         name={field.name}
@@ -15,6 +20,7 @@ export function FormTextarea(props: FormControlProps) {
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
         aria-invalid={isInvalid}
+        {...props}
       />
     </FormBase>
   );

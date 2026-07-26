@@ -1,12 +1,4 @@
-import {
-  boolean,
-  index,
-  integer,
-  snakeCase,
-  text,
-  timestamp,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
+import { boolean, index, integer, snakeCase, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 
 import { createdUpdated } from "./common";
 

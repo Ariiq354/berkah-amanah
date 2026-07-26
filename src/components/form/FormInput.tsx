@@ -1,13 +1,18 @@
-import { Input } from "../ui/input";
-import { FormBase, type FormControlProps } from "./FormBase";
-import { useFieldContext } from "./hooks";
+import type { ComponentProps } from "react";
 
-export function FormInput(props: FormControlProps) {
+import { Input } from "../ui/input";
+import { useFieldContext } from "./context";
+import { FormBase, type FormControlProps } from "./FormBase";
+
+export type FormInputProps = FormControlProps &
+  Omit<ComponentProps<typeof Input>, "id" | "name" | "value" | "onBlur" | "onChange" | "aria-invalid">;
+
+export function FormInput({ label, description, ...props }: FormInputProps) {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
-    <FormBase {...props}>
+    <FormBase label={label} description={description}>
       <Input
         id={field.name}
         name={field.name}
@@ -15,6 +20,7 @@ export function FormInput(props: FormControlProps) {
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
         aria-invalid={isInvalid}
+        {...props}
       />
     </FormBase>
   );

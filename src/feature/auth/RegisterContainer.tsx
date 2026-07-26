@@ -1,9 +1,10 @@
-import { cn } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 
 export function RegisterContainer({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -13,15 +14,9 @@ export function RegisterContainer({ className, ...props }: React.ComponentProps<
           <form className="p-6 md:p-8">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
-                <img
-                  src="/logo.webp"
-                  alt="Logo Berkah Amanah"
-                  className="h-20 w-20 object-contain mb-2"
-                />
+                <img src="/logo.webp" alt="Logo Berkah Amanah" className="mb-2 h-20 w-20 object-contain" />
                 <h1 className="text-2xl font-bold">Daftar Akun</h1>
-                <p className="text-sm text-balance text-muted-foreground">
-                  Bergabung bersama Berkah Amanah
-                </p>
+                <p className="text-muted-foreground text-sm text-balance">Bergabung bersama Berkah Amanah</p>
               </div>
               <Field>
                 <FieldLabel htmlFor="username">Username</FieldLabel>
@@ -44,7 +39,7 @@ export function RegisterContainer({ className, ...props }: React.ComponentProps<
               </FieldDescription>
             </FieldGroup>
           </form>
-          <div className="relative hidden bg-muted md:block">
+          <div className="bg-muted relative hidden md:block">
             <img
               src="/placeholder.svg"
               alt="Image"
