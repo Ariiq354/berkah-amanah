@@ -2,6 +2,8 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
+import { Toaster } from "#/components/ui/toast";
+
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -17,11 +19,19 @@ export const Route = createRootRoute({
       {
         title: "Berkah Amanah",
       },
+      {
+        name: "description",
+        content: "Sistem informasi Berkah Amanah.",
+      },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "icon",
+        href: "/favicon.ico",
       },
     ],
   }),
@@ -48,6 +58,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           ]}
         />
         <Scripts />
+        <Toaster />
       </body>
     </html>
   );

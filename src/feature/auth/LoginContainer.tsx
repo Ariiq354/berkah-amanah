@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 
 import { useAppForm } from "#/components/form/hooks";
+import { toast } from "#/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
 
 import { loginSchema, type LoginSchema } from "./model";
 
@@ -19,7 +19,10 @@ export function LoginContainer() {
       onSubmit: loginSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      toast.add({
+        title: "Event created",
+        description: JSON.stringify(value, null, 2),
+      });
     },
   });
 
@@ -36,21 +39,37 @@ export function LoginContainer() {
           >
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
-                <img src="/logo.webp" alt="Logo Berkah Amanah" className="mb-2 h-20 w-20 object-contain" />
+                <img
+                  src="/logo.webp"
+                  alt="Logo Berkah Amanah"
+                  className="mb-2 h-20 w-20 object-contain"
+                />
                 <h1 className="text-2xl font-bold">Selamat Datang</h1>
-                <p className="text-muted-foreground text-sm text-balance">Masuk ke portal Berkah Amanah</p>
+                <p className="text-muted-foreground text-sm text-balance">
+                  Masuk ke portal Berkah Amanah
+                </p>
               </div>
-              <form.AppField name="username">{(field) => <field.Input label="Username" />}</form.AppField>
-              <Field>
-                <FieldLabel htmlFor="username">Username</FieldLabel>
-                <Input id="username" type="text" placeholder="Masukkan username" required />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Kata Sandi</FieldLabel>
-                </div>
-                <Input id="password" type="password" placeholder="••••••••" required />
-              </Field>
+              <form.AppField name="username">
+                {(field) => (
+                  <field.Input
+                    label="Username"
+                    placeholder="Masukkan username"
+                    required
+                  />
+                )}
+              </form.AppField>
+              <form.AppField name="password">
+                {(field) => (
+                  <field.InputPassword
+                    label="Password"
+                    placeholder="Masukkan password"
+                    required
+                  />
+                )}
+              </form.AppField>
+              <form.AppField name="rememberMe">
+                {(field) => <field.Checkbox label="Ingat saya" />}
+              </form.AppField>
               <Field>
                 <Button type="submit">Masuk</Button>
               </Field>
