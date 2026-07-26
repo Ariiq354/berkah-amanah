@@ -1,15 +1,11 @@
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "unicorn", "oxc", "import"],
-  "env": {
-    "browser": true
-  },
-  "settings": {
-    "react": {
-      "version": "19.2.0"
-    }
-  },
-  "rules": {
-    "react/react-compiler": "error"
-  }
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "trailingComma": "all",
+  "sortImports": true,
+  "sortTailwindcss": true,
+  "ignorePatterns": ["**/routeTree.gen.ts"]
 }
