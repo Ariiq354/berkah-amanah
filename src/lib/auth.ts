@@ -14,6 +14,12 @@ export const auth = betterAuth({
       relations,
     },
   }),
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60,
+    },
+  },
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,

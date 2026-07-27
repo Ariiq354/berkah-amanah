@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { createAuthClient } from "better-auth/client";
 import {
   inferAdditionalFields,
   usernameClient,
@@ -8,7 +8,7 @@ import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import type { auth } from "./auth";
 
-export const authClient = betterAuth({
+export const authClient = createAuthClient({
   plugins: [
     usernameClient(),
     adminClient(),

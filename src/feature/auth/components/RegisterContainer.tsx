@@ -6,16 +6,19 @@ import { Button } from "#/components/ui/button";
 import { Card, CardContent } from "#/components/ui/card";
 import { Field, FieldDescription, FieldGroup } from "#/components/ui/field";
 import { SelectGroup, SelectItem, SelectLabel } from "#/components/ui/select";
-import { toast } from "#/components/ui/toast";
+import { Spinner } from "#/components/ui/spinner";
 import { getOptionsKelompokQueryOptions } from "#/feature/kelompok/queries/kelompok-query";
 
+import { useRegisterMutation } from "../queries/mutation";
 import {
   registerSchema,
   type RegisterSchema,
 } from "../schemas/register-schema";
 
 export function RegisterContainer() {
-  const { data: kelompok = [], isLoading } = useQuery(
+  const registerMutation = useRegisterMutation();
+
+  const { data: kelompok = [], isLoading: isLoadingKelompok } = useQuery(
     getOptionsKelompokQueryOptions,
   );
 
@@ -25,18 +28,16 @@ export function RegisterContainer() {
       username: "",
       password: "",
       confirmPassword: "",
-      fruit: undefined,
+      idKelompok: undefined,
     } satisfies RegisterSchema as RegisterSchema,
     validators: {
       onSubmit: registerSchema,
     },
     onSubmit: async ({ value }) => {
-      toast.add({
-        title: "Event created",
-        description: JSON.stringify(value, null, 2),
-      });
+      await registerMutation.mutateAsync(value);
     },
   });
+
   return (
     <div className="flex flex-col gap-6">
       <Card className="overflow-hidden p-0">
@@ -96,13 +97,15 @@ export function RegisterContainer() {
                   />
                 )}
               </form.AppField>
-              <form.AppField name="fruit">
+              <form.AppField name="idKelompok">
                 {(field) => (
                   <field.Select
                     label="Kelompok"
-                    placeholder={isLoading ? "Loading..." : "Pilih Kelompok"}
+                    placeholder={
+                      isLoadingKelompok ? "Loading..." : "Pilih Kelompok"
+                    }
                     items={kelompok}
-                    disabled={isLoading}
+                    disabled={isLoadingKelompok}
                   >
                     <SelectGroup>
                       <SelectLabel>Kelompok</SelectLabel>
@@ -116,7 +119,16 @@ export function RegisterContainer() {
                 )}
               </form.AppField>
               <Field>
-                <Button type="submit">Buat Akun</Button>
+                <Button
+                  type="submit"
+                  disabled={registerMutation.isPending}
+                  aria-disabled={registerMutation.isPending}
+                >
+                  {registerMutation.isPending && (
+                    <Spinner data-icon="inline-start" />
+                  )}
+                  Buat Akun
+                </Button>
               </Field>
 
               <FieldDescription className="text-center">

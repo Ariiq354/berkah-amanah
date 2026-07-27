@@ -4,11 +4,14 @@ import { useAppForm } from "#/components/form/hooks";
 import { Button } from "#/components/ui/button";
 import { Card, CardContent } from "#/components/ui/card";
 import { Field, FieldDescription, FieldGroup } from "#/components/ui/field";
-import { toast } from "#/components/ui/toast";
+import { Spinner } from "#/components/ui/spinner";
 
+import { useLoginMutation } from "../queries/mutation";
 import { loginSchema, type LoginSchema } from "../schemas/login-schema";
 
 export function LoginContainer() {
+  const loginMutation = useLoginMutation();
+
   const form = useAppForm({
     defaultValues: {
       username: "",
@@ -19,10 +22,7 @@ export function LoginContainer() {
       onSubmit: loginSchema,
     },
     onSubmit: async ({ value }) => {
-      toast.add({
-        title: "Event created",
-        description: JSON.stringify(value, null, 2),
-      });
+      await loginMutation.mutateAsync(value);
     },
   });
 
@@ -71,7 +71,16 @@ export function LoginContainer() {
                 {(field) => <field.Checkbox label="Ingat saya" />}
               </form.AppField>
               <Field>
-                <Button type="submit">Masuk</Button>
+                <Button
+                  type="submit"
+                  disabled={loginMutation.isPending}
+                  aria-disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending && (
+                    <Spinner data-icon="inline-start" />
+                  )}
+                  Masuk
+                </Button>
               </Field>
               <FieldDescription className="text-center">
                 Belum punya akun? <Link to="/register">Daftar</Link>

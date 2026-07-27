@@ -1,4 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+  useMatches,
+} from "@tanstack/react-router";
+import { Fragment } from "react";
 
 import { AppSidebar } from "#/components/sidebar/AppSidebar";
 import {
@@ -15,12 +22,27 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "#/components/ui/sidebar";
+import { getSession } from "#/lib/auth-function";
 
 export const Route = createFileRoute("/dashboard")({
+  beforeLoad: async () => {
+    const session = await getSession();
+
+    if (!session) {
+      throw redirect({ to: "/" });
+    }
+
+    return { user: session.user };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const matches = useMatches();
+
+  const breadcrumbs = matches.flatMap(
+    (match) => match.staticData?.breadcrumb ?? [],
+  );
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -28,32 +50,35 @@ function RouteComponent() {
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
+            <Separator orientation="vertical" className="my-auto mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Build Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
+                {breadcrumbs.map((item, index) => {
+                  const isLast = index === breadcrumbs.length - 1;
+
+                  return (
+                    <Fragment key={item.to ?? item.title}>
+                      <BreadcrumbItem className="hidden md:block">
+                        {!isLast && item.to ? (
+                          <BreadcrumbLink
+                            render={<Link to={item.to}>{item.title}</Link>}
+                          />
+                        ) : (
+                          <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                        )}
+                      </BreadcrumbItem>
+                      {!isLast && (
+                        <BreadcrumbSeparator className="hidden md:block" />
+                      )}
+                    </Fragment>
+                  );
+                })}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />
+        <div className="p-4">
+          <Outlet />
         </div>
       </SidebarInset>
     </SidebarProvider>

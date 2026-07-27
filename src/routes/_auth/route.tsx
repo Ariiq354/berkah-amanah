@@ -6,11 +6,9 @@ export const Route = createFileRoute("/_auth")({
   beforeLoad: async () => {
     const session = await getSession();
 
-    if (!session) {
+    if (session) {
       throw redirect({ to: "/dashboard" });
     }
-
-    return { user: session.user };
   },
   component: RouteComponent,
 });

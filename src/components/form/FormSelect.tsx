@@ -20,14 +20,14 @@ export function FormSelect({
   description,
   ...props
 }: FormSelectProps) {
-  const field = useFieldContext<string | null>();
+  const field = useFieldContext<string | number>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
     <FormBase label={label} description={description}>
       <Select
         onValueChange={(e: any) => field.handleChange(e)}
-        value={field.state.value ?? undefined}
+        value={field.state.value}
         {...props}
       >
         <SelectTrigger

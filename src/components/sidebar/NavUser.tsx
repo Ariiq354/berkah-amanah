@@ -1,3 +1,4 @@
+import { useRouteContext } from "@tanstack/react-router";
 import {
   BadgeCheck,
   Bell,
@@ -22,16 +23,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "#/components/ui/sidebar";
+import { useSignOutMutation } from "#/feature/auth/queries/mutation";
+import { getInitials } from "#/lib/utils";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser() {
+  const { user } = useRouteContext({ from: "/dashboard" });
+
+  const signOutMutation = useSignOutMutation();
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -45,13 +44,15 @@ export function NavUser({
             }
           >
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <AvatarImage src={user.image ?? undefined} alt={user.name} />
+              <AvatarFallback className="rounded-lg">
+                {getInitials(user.name)}
+              </AvatarFallback>
             </Avatar>
 
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
+              <span className="truncate text-xs">{user.username}</span>
             </div>
 
             <ChevronsUpDown className="ml-auto size-4" />
@@ -67,13 +68,18 @@ export function NavUser({
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    <AvatarImage
+                      src={user.image ?? undefined}
+                      alt={user.name}
+                    />
+                    <AvatarFallback className="rounded-lg">
+                      {getInitials(user.name)}
+                    </AvatarFallback>
                   </Avatar>
 
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{user.name}</span>
-                    <span className="truncate text-xs">{user.email}</span>
+                    <span className="truncate text-xs">{user.username}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>
@@ -109,9 +115,12 @@ export function NavUser({
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => signOutMutation.mutate()}
+              disabled={signOutMutation.isPending}
+            >
               <LogOut />
-              Log out
+              {signOutMutation.isPending ? "Sedang keluar..." : "Keluar"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
