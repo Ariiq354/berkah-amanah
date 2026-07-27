@@ -10,6 +10,7 @@
     "generate-routes": "tsr generate",
     "lint": "oxlint --fix",
     "format": "oxfmt --write",
+    "check": "tsc --noEmit",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "build": "vite build",
