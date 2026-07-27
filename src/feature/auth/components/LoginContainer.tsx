@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
 
 import { useAppForm } from "#/components/form/hooks";
+import { Button } from "#/components/ui/button";
+import { Card, CardContent } from "#/components/ui/card";
+import { Field, FieldDescription, FieldGroup } from "#/components/ui/field";
 import { toast } from "#/components/ui/toast";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
 
-import { loginSchema, type LoginSchema } from "./model";
+import { loginSchema, type LoginSchema } from "../schemas/login-schema";
 
 export function LoginContainer() {
   const form = useAppForm({

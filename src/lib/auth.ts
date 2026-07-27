@@ -1,18 +1,47 @@
+import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { betterAuth } from "better-auth";
-import {
-  inferAdditionalFields,
-  usernameClient,
-  adminClient,
-} from "better-auth/client/plugins";
-import { tanstackStartCookies } from "better-auth/tanstack-start";
+import { admin as adminPlugins, username } from "better-auth/plugins";
 
-import type { auth } from "#/server/utils/auth";
+import { db } from "#/database";
+import { relations } from "#/database/relations";
+import * as schema from "#/database/schema/auth";
 
-export const authClient = betterAuth({
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      ...schema,
+      relations,
+    },
+  }),
+  emailAndPassword: {
+    enabled: true,
+    autoSignIn: false,
+    minPasswordLength: 7,
+  },
+  advanced: {
+    database: {
+      generateId: false,
+      joins: true,
+    },
+  },
+  user: {
+    additionalFields: {
+      idKelompok: {
+        type: "number",
+        input: true,
+        required: true,
+      },
+    },
+  },
   plugins: [
-    usernameClient(),
-    adminClient(),
-    inferAdditionalFields<typeof auth>(),
-    tanstackStartCookies(),
+    username(),
+    adminPlugins({
+      defaultRole: "daerah",
+    }),
   ],
 });
+
+export type UserWithId = Omit<typeof auth.$Infer.Session.user, "id"> & {
+  id: number;
+};

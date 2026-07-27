@@ -5,7 +5,10 @@ import { useFieldContext } from "./context";
 import { FormBase, type FormControlProps } from "./FormBase";
 
 export type FormInputProps = FormControlProps &
-  Omit<ComponentProps<typeof Input>, "id" | "name" | "value" | "onBlur" | "onChange" | "aria-invalid">;
+  Omit<
+    ComponentProps<typeof Input>,
+    "id" | "name" | "value" | "onBlur" | "onChange" | "aria-invalid"
+  >;
 
 export function FormInput({ label, description, ...props }: FormInputProps) {
   const field = useFieldContext<string>();

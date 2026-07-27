@@ -1,6 +1,15 @@
-import { boolean, index, integer, snakeCase, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  integer,
+  snakeCase,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 import { createdUpdated } from "./common";
+import { kelompok } from "./kelompok";
 
 export const user = snakeCase.table(
   "user",
@@ -13,6 +22,9 @@ export const user = snakeCase.table(
     emailVerified: boolean().notNull(),
     image: text(),
     role: text(),
+    idKelompok: integer()
+      .notNull()
+      .references(() => kelompok.id, { onDelete: "cascade" }),
     banned: boolean(),
     banReason: text(),
     banExpires: timestamp({ withTimezone: true }),
@@ -35,7 +47,10 @@ export const session = snakeCase.table(
     impersonatedBy: text(),
     ...createdUpdated,
   },
-  (table) => [index("userid_idx_session").on(table.userId), index("token_idx").on(table.token)],
+  (table) => [
+    index("userid_idx_session").on(table.userId),
+    index("token_idx").on(table.token),
+  ],
 );
 
 export const account = snakeCase.table(

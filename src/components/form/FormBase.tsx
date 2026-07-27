@@ -1,6 +1,12 @@
 import type { ReactNode } from "react";
 
-import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from "../ui/field";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "../ui/field";
 import { useFieldContext } from "./context";
 
 export type FormControlProps = {
@@ -14,7 +20,13 @@ type FormBaseProps = FormControlProps & {
   controlFirst?: boolean;
 };
 
-export function FormBase({ children, label, description, controlFirst, horizontal }: FormBaseProps) {
+export function FormBase({
+  children,
+  label,
+  description,
+  controlFirst,
+  horizontal,
+}: FormBaseProps) {
   const field = useFieldContext();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   const labelElement = (
@@ -23,10 +35,15 @@ export function FormBase({ children, label, description, controlFirst, horizonta
       {description && <FieldDescription>{description}</FieldDescription>}
     </>
   );
-  const errorElem = isInvalid && <FieldError errors={field.state.meta.errors} />;
+  const errorElem = isInvalid && (
+    <FieldError errors={field.state.meta.errors} />
+  );
 
   return (
-    <Field data-invalid={isInvalid} orientation={horizontal ? "horizontal" : undefined}>
+    <Field
+      data-invalid={isInvalid}
+      orientation={horizontal ? "horizontal" : undefined}
+    >
       {controlFirst ? (
         <>
           {children}

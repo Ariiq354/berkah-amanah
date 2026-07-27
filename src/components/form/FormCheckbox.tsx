@@ -5,9 +5,16 @@ import { useFieldContext } from "./context";
 import { FormBase, type FormControlProps } from "./FormBase";
 
 export type FormCheckboxProps = FormControlProps &
-  Omit<ComponentProps<typeof Checkbox>, "id" | "name" | "checked" | "onBlur" | "onCheckedChange" | "aria-invalid">;
+  Omit<
+    ComponentProps<typeof Checkbox>,
+    "id" | "name" | "checked" | "onBlur" | "onCheckedChange" | "aria-invalid"
+  >;
 
-export function FormCheckbox({ label, description, ...props }: FormCheckboxProps) {
+export function FormCheckbox({
+  label,
+  description,
+  ...props
+}: FormCheckboxProps) {
   const field = useFieldContext<boolean>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 

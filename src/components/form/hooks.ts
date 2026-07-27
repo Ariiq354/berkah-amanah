@@ -6,6 +6,7 @@ import {
   useFieldContext,
   useFormContext,
 } from "./context";
+import { FormBase } from "./FormBase";
 import { FormCheckbox } from "./FormCheckbox";
 import { FormInput } from "./FormInput";
 import { FormInputNumber } from "./FormInputNumber";
@@ -15,6 +16,7 @@ import { FormTextarea } from "./FormTextarea";
 
 const { useAppForm } = createFormHook({
   fieldComponents: {
+    Base: FormBase,
     Input: FormInput,
     Checkbox: FormCheckbox,
     Select: FormSelect,

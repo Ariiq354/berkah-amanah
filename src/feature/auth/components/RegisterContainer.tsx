@@ -1,20 +1,31 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
 import { useAppForm } from "#/components/form/hooks";
+import { Button } from "#/components/ui/button";
+import { Card, CardContent } from "#/components/ui/card";
+import { Field, FieldDescription, FieldGroup } from "#/components/ui/field";
+import { SelectGroup, SelectItem, SelectLabel } from "#/components/ui/select";
 import { toast } from "#/components/ui/toast";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
+import { getOptionsKelompokQueryOptions } from "#/feature/kelompok/queries/kelompok-query";
 
-import { registerSchema, type RegisterSchema } from "./model";
+import {
+  registerSchema,
+  type RegisterSchema,
+} from "../schemas/register-schema";
 
 export function RegisterContainer() {
+  const { data: kelompok = [], isLoading } = useQuery(
+    getOptionsKelompokQueryOptions,
+  );
+
   const form = useAppForm({
     defaultValues: {
       name: "",
       username: "",
       password: "",
       confirmPassword: "",
+      fruit: undefined,
     } satisfies RegisterSchema as RegisterSchema,
     validators: {
       onSubmit: registerSchema,
@@ -83,6 +94,25 @@ export function RegisterContainer() {
                     placeholder="Masukkan konfirmasi password"
                     required
                   />
+                )}
+              </form.AppField>
+              <form.AppField name="fruit">
+                {(field) => (
+                  <field.Select
+                    label="Kelompok"
+                    placeholder={isLoading ? "Loading..." : "Pilih Kelompok"}
+                    items={kelompok}
+                    disabled={isLoading}
+                  >
+                    <SelectGroup>
+                      <SelectLabel>Kelompok</SelectLabel>
+                      {kelompok.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </field.Select>
                 )}
               </form.AppField>
               <Field>

@@ -5,9 +5,16 @@ import { useFieldContext } from "./context";
 import { FormBase, type FormControlProps } from "./FormBase";
 
 export type FormTextareaProps = FormControlProps &
-  Omit<ComponentProps<typeof Textarea>, "id" | "name" | "value" | "onBlur" | "onChange" | "aria-invalid">;
+  Omit<
+    ComponentProps<typeof Textarea>,
+    "id" | "name" | "value" | "onBlur" | "onChange" | "aria-invalid"
+  >;
 
-export function FormTextarea({ label, description, ...props }: FormTextareaProps) {
+export function FormTextarea({
+  label,
+  description,
+  ...props
+}: FormTextareaProps) {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
