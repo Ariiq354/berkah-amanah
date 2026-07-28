@@ -2,7 +2,7 @@ import { useRouteContext } from "@tanstack/react-router";
 import { ChevronsUpDown, KeyRound, LogOut } from "lucide-react";
 import { useState } from "react";
 
-import { DialogUbahPassword } from "#/components/Dialog/DialogUbahPassword";
+import { DialogUbahPassword } from "#/components/dialog/DialogUbahPassword";
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 import {
   DropdownMenu,
