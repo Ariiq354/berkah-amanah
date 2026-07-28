@@ -1,14 +1,4 @@
-import {
-  BookOpen,
-  Bot,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { BookOpen, Bot, Settings2, SquareTerminal } from "lucide-react";
 import * as React from "react";
 
 import {
@@ -17,7 +7,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "#/components/ui/sidebar";
 
@@ -25,11 +14,6 @@ import { NavMain } from "./NavMain";
 import { NavUser } from "./NavUser";
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Playground",
@@ -117,35 +101,6 @@ const data = {
       ],
     },
   ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -154,14 +109,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<a href="#" />}>
+            <div className="flex h-14 w-full items-center gap-2 overflow-hidden px-3 py-2 text-left text-sm">
               <img src="/logo.webp" alt="Berkah Amanah" className="size-8" />
 
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">Berkah Amanah</span>
                 <span className="truncate text-xs">Koperasi</span>
               </div>
-            </SidebarMenuButton>
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

@@ -9,7 +9,7 @@ import { SelectGroup, SelectItem, SelectLabel } from "#/components/ui/select";
 import { Spinner } from "#/components/ui/spinner";
 import { getOptionsKelompokQueryOptions } from "#/feature/kelompok/queries/kelompok-query";
 
-import { useRegisterMutation } from "../queries/mutation";
+import { useRegisterMutation } from "../mutations/register-mutation";
 import {
   registerSchema,
   type RegisterSchema,

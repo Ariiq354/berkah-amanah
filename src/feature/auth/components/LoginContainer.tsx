@@ -6,7 +6,7 @@ import { Card, CardContent } from "#/components/ui/card";
 import { Field, FieldDescription, FieldGroup } from "#/components/ui/field";
 import { Spinner } from "#/components/ui/spinner";
 
-import { useLoginMutation } from "../queries/mutation";
+import { useLoginMutation } from "../mutations/login-mutation";
 import { loginSchema, type LoginSchema } from "../schemas/login-schema";
 
 export function LoginContainer() {
