@@ -1,4 +1,16 @@
-import { BookOpen, Bot, Settings2, SquareTerminal } from "lucide-react";
+import {
+  Activity,
+  BadgeCheck,
+  ChartColumn,
+  ChartNoAxesCombined,
+  Landmark,
+  LayoutDashboard,
+  ShoppingCart,
+  Store,
+  Truck,
+  Wallet,
+  Percent,
+} from "lucide-react";
 import * as React from "react";
 
 import {
@@ -10,98 +22,313 @@ import {
   SidebarMenuItem,
 } from "#/components/ui/sidebar";
 
-import { NavMain } from "./NavMain";
+import { NavMain, type NavGroup } from "./NavMain";
 import { NavUser } from "./NavUser";
 
-const data = {
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-};
+const navMain: NavGroup[] = [
+  {
+    title: "Dashboard",
+    items: [
+      {
+        title: "Beranda",
+        url: "/",
+        icon: LayoutDashboard,
+      },
+    ],
+  },
+
+  {
+    title: "Monitoring",
+    items: [
+      {
+        title: "Monitoring Simpanan",
+        url: "#",
+        icon: Activity,
+      },
+      {
+        title: "Monitoring Pembiayaan",
+        url: "#",
+        icon: Activity,
+      },
+      {
+        title: "Monitoring",
+        icon: ChartColumn,
+        items: [
+          {
+            title: "Anggota",
+            url: "#",
+          },
+          {
+            title: "Simpanan",
+            url: "#",
+          },
+          {
+            title: "Pembiayaan",
+            url: "#",
+          },
+          {
+            title: "Hutang Agen",
+            url: "#",
+          },
+          {
+            title: "SHU",
+            url: "#",
+          },
+        ],
+      },
+      {
+        title: "Bagi Hasil Usaha",
+        url: "#",
+        icon: ChartNoAxesCombined,
+      },
+    ],
+  },
+
+  {
+    title: "Transaksi",
+    items: [
+      {
+        title: "Transaksi",
+        icon: Wallet,
+        items: [
+          {
+            title: "Input Transaksi",
+            url: "#",
+          },
+          {
+            title: "Setoran",
+            url: "#",
+          },
+          {
+            title: "Penarikan",
+            url: "#",
+          },
+          {
+            title: "Pemindahbukuan",
+            url: "#",
+          },
+          {
+            title: "Angsuran",
+            items: [
+              {
+                title: "Internal",
+                url: "#",
+              },
+              {
+                title: "External",
+                url: "#",
+              },
+            ],
+          },
+          {
+            title: "Pembiayaan",
+            items: [
+              {
+                title: "Internal",
+                url: "#",
+              },
+              {
+                title: "External",
+                url: "#",
+              },
+              {
+                title: "Hutang",
+                url: "#",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Persetujuan",
+    items: [
+      {
+        title: "Persetujuan",
+        icon: BadgeCheck,
+        items: [
+          {
+            title: "Setoran",
+            url: "#",
+          },
+          {
+            title: "Penarikan",
+            url: "#",
+          },
+          {
+            title: "Pemindahbukuan",
+            url: "#",
+          },
+          {
+            title: "Angsuran Internal",
+            url: "#",
+          },
+          {
+            title: "Angsuran External",
+            url: "#",
+          },
+          {
+            title: "Pembiayaan Internal",
+            url: "#",
+          },
+          {
+            title: "Pembiayaan External",
+            url: "#",
+          },
+          {
+            title: "Pembiayaan TDS-0",
+            url: "#",
+          },
+          {
+            title: "Anggota Baru",
+            url: "#",
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Keuangan",
+    items: [
+      {
+        title: "Daftar Margin",
+        url: "#",
+        icon: Percent,
+      },
+      {
+        title: "Laporan Keuangan",
+        icon: Landmark,
+        items: [
+          {
+            title: "Daftar Akun",
+            url: "#",
+          },
+          {
+            title: "Daftar Transaksi",
+            url: "#",
+          },
+          {
+            title: "Summary Unbalance",
+            url: "#",
+          },
+          {
+            title: "Neraca",
+            items: [
+              {
+                title: "Bulanan",
+                url: "#",
+              },
+              {
+                title: "Summary",
+                url: "#",
+              },
+            ],
+          },
+          {
+            title: "Laba Rugi",
+            items: [
+              {
+                title: "Bulanan",
+                url: "#",
+              },
+              {
+                title: "Summary",
+                url: "#",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "Bisnis",
+    items: [
+      {
+        title: "Jual Beli",
+        icon: ShoppingCart,
+        items: [
+          {
+            title: "Pembelian",
+            url: "#",
+          },
+          {
+            title: "Penjualan",
+            url: "#",
+          },
+          {
+            title: "Daftar Mobil",
+            url: "#",
+          },
+        ],
+      },
+
+      {
+        title: "Distributor TDS-0",
+        icon: Truck,
+        items: [
+          {
+            title: "Pembelian",
+            url: "#",
+          },
+          {
+            title: "Penjualan",
+            items: [
+              {
+                title: "Athar",
+                url: "#",
+              },
+              {
+                title: "TDS-0 Kemasan",
+                url: "#",
+              },
+            ],
+          },
+          {
+            title: "Pembayaran",
+            items: [
+              {
+                title: "Input",
+                url: "#",
+              },
+              {
+                title: "Monitoring",
+                url: "#",
+              },
+            ],
+          },
+          {
+            title: "Daftar Hutang Agen",
+            url: "#",
+          },
+          {
+            title: "Monitoring Anggota",
+            url: "#",
+          },
+        ],
+      },
+
+      {
+        title: "Agen TDS-0",
+        icon: Store,
+        items: [
+          {
+            title: "Pemesanan Athar",
+            url: "#",
+          },
+          {
+            title: "Daftar Hutang Athar",
+            url: "#",
+          },
+        ],
+      },
+    ],
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -121,7 +348,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain groups={navMain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
