@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { DashboardContainer } from "#/feature/dashboard/components/DashboardContainer";
+
 export const Route = createFileRoute("/dashboard/")({
   staticData: {
     breadcrumb: [
@@ -12,13 +14,5 @@ export const Route = createFileRoute("/dashboard/")({
 });
 
 function RouteComponent() {
-  return (
-    <>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-      </div>
-    </>
-  );
+  return <DashboardContainer />;
 }
