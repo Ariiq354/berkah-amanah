@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import {
   Users,
@@ -17,12 +17,11 @@ import {
   CardHeader,
   CardTitle,
 } from "#/components/ui/card";
-import { Skeleton } from "#/components/ui/skeleton";
 import { getOptionsKelompokQueryOptions } from "#/feature/kelompok/queries/kelompok-query";
 
 export function DashboardContainer() {
   const { user } = useRouteContext({ from: "/dashboard" });
-  const { data: kelompokList, isLoading: isKelompokLoading } = useQuery(
+  const { data: kelompokList } = useSuspenseQuery(
     getOptionsKelompokQueryOptions,
   );
 
@@ -70,13 +69,9 @@ export function DashboardContainer() {
             </div>
           </CardHeader>
           <CardContent>
-            {isKelompokLoading ? (
-              <Skeleton className="h-9 w-20" />
-            ) : (
-              <div className="text-3xl font-bold tracking-tight">
-                {kelompokList?.length ?? 0}
-              </div>
-            )}
+            <div className="text-3xl font-bold tracking-tight">
+              {kelompokList?.length ?? 0}
+            </div>
             <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
               <TrendingUp className="h-3 w-3 text-emerald-500" />
               <span className="font-medium text-emerald-500">Aktif</span> di

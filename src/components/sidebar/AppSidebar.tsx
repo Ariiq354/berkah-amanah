@@ -31,7 +31,7 @@ const navMain: NavGroup[] = [
     items: [
       {
         title: "Beranda",
-        url: "/",
+        url: "/dashboard",
         icon: LayoutDashboard,
       },
     ],
@@ -204,7 +204,7 @@ const navMain: NavGroup[] = [
         items: [
           {
             title: "Daftar Akun",
-            url: "#",
+            url: "/dashboard/akun",
           },
           {
             title: "Daftar Transaksi",

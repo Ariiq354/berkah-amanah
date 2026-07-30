@@ -14,6 +14,7 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardAkunRouteImport } from './routes/dashboard/akun'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -40,6 +41,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardAkunRoute = DashboardAkunRouteImport.update({
+  id: '/akun',
+  path: '/akun',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -50,11 +56,13 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/register': typeof AuthRegisterRoute
+  '/dashboard/akun': typeof DashboardAkunRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/register': typeof AuthRegisterRoute
+  '/dashboard/akun': typeof DashboardAkunRoute
   '/': typeof AuthIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -64,20 +72,28 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/_auth/register': typeof AuthRegisterRoute
+  '/dashboard/akun': typeof DashboardAkunRoute
   '/_auth/': typeof AuthIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/register' | '/dashboard/' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/register'
+    | '/dashboard/akun'
+    | '/dashboard/'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/register' | '/' | '/dashboard' | '/api/auth/$'
+  to: '/register' | '/dashboard/akun' | '/' | '/dashboard' | '/api/auth/$'
   id:
     | '__root__'
     | '/_auth'
     | '/dashboard'
     | '/_auth/register'
+    | '/dashboard/akun'
     | '/_auth/'
     | '/dashboard/'
     | '/api/auth/$'
@@ -126,6 +142,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/akun': {
+      id: '/dashboard/akun'
+      path: '/akun'
+      fullPath: '/dashboard/akun'
+      preLoaderRoute: typeof DashboardAkunRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -151,10 +174,12 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface DashboardRouteRouteChildren {
+  DashboardAkunRoute: typeof DashboardAkunRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardAkunRoute: DashboardAkunRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 

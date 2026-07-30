@@ -8,6 +8,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import { NotFoundComponent } from "#/components/page/NotFoundComponent";
+import { LoadingBar } from "#/components/ui/loading-bar";
 import { Toaster } from "#/components/ui/toast";
 
 import appCss from "../styles.css?url";
@@ -54,6 +55,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <LoadingBar />
         {children}
         <TanStackDevtools
           config={{
