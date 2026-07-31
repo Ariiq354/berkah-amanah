@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { ensureSession } from "#/lib/auth-function";
-import { deleteSchema, idSchema } from "#/lib/schema";
+import { deleteSchema } from "#/lib/schema";
 
 import { createAkunSchema, filterAkunSchema, updateAkunSchema } from "./model";
 import { AkunService } from "./service.server";
@@ -11,15 +11,14 @@ export const getAkunListFn = createServerFn({ method: "GET" })
   .handler(async ({ data: filters }) => {
     await ensureSession();
 
-    return await AkunService.getAkunList(filters);
-  });
+    const res = await AkunService.getAkunList(filters);
 
-export const getAkunByIdFn = createServerFn({ method: "GET" })
-  .validator(idSchema)
-  .handler(async ({ data: id }) => {
-    await ensureSession();
-
-    return await AkunService.getAkunById(id);
+    return res.match(
+      (data) => data,
+      () => {
+        throw new Error("Terjadi kesalahan database");
+      },
+    );
   });
 
 export const createAkunFn = createServerFn({ method: "POST" })
@@ -27,7 +26,21 @@ export const createAkunFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await ensureSession();
 
-    await AkunService.createAkun(data);
+    const res = await AkunService.createAkun(data);
+    return res.match(
+      () => {},
+      (error) => {
+        switch (error.code) {
+          case "KODE_USED":
+            throw new Error("Kode akun sudah digunakan");
+          case "DATABASE_ERROR":
+            throw new Error("Terjadi kesalahan database");
+          default:
+            error satisfies never;
+            throw new Error(`Terjadi kesalahan`);
+        }
+      },
+    );
   });
 
 export const updateAkunFn = createServerFn({ method: "POST" })
@@ -35,7 +48,24 @@ export const updateAkunFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await ensureSession();
 
-    await AkunService.updateAkun(data);
+    const res = await AkunService.updateAkun(data);
+
+    return res.match(
+      () => {},
+      (error) => {
+        switch (error.code) {
+          case "KODE_USED":
+            throw new Error("Kode akun sudah digunakan");
+          case "AKUN_NOT_FOUND":
+            throw new Error("Akun tidak ditemukan");
+          case "DATABASE_ERROR":
+            throw new Error("Terjadi kesalahan database");
+          default:
+            error satisfies never;
+            throw new Error("Terjadi kesalahan");
+        }
+      },
+    );
   });
 
 export const deleteAkunFn = createServerFn({ method: "POST" })
@@ -43,5 +73,19 @@ export const deleteAkunFn = createServerFn({ method: "POST" })
   .handler(async ({ data: ids }) => {
     await ensureSession();
 
-    await AkunService.deleteAkun(ids);
+    const res = await AkunService.deleteAkun(ids);
+    return res.match(
+      () => {},
+      (error) => {
+        switch (error.code) {
+          case "AKUN_NOT_FOUND":
+            throw new Error("Akun tidak ditemukan");
+          case "DATABASE_ERROR":
+            throw new Error("Terjadi kesalahan database");
+          default:
+            error satisfies never;
+            throw new Error("Terjadi kesalahan");
+        }
+      },
+    );
   });

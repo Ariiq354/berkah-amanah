@@ -12,40 +12,68 @@ import { FieldGroup } from "#/components/ui/field";
 import { Spinner } from "#/components/ui/spinner";
 
 import { useCreateAkunMutation } from "../mutations/create-mutation";
+import { useUpdateAkunMutation } from "../mutations/update-mutation";
 import { createAkunSchema, type CreateAkunInput } from "../server/model";
+import type { AkunRow } from "./columns";
 
 interface DialogTambahAkunProps {
+  akun?: AkunRow | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+function getAkunFormValues(akun: AkunRow | null): CreateAkunInput {
+  if (akun) {
+    return {
+      kodeAkun: akun.kodeAkun,
+      namaAkun: akun.namaAkun,
+      status: akun.status,
+    };
+  }
+
+  return {
+    kodeAkun: "",
+    namaAkun: "",
+    status: true,
+  };
+}
+
 export function DialogTambahAkun({
+  akun = null,
   open,
   onOpenChange,
 }: DialogTambahAkunProps) {
   const createAkunMutation = useCreateAkunMutation();
+  const updateAkunMutation = useUpdateAkunMutation();
+  const isEditing = akun !== null;
 
   const form = useAppForm({
-    defaultValues: {
-      kodeAkun: "",
-      namaAkun: "",
-      status: true,
-    } satisfies CreateAkunInput as CreateAkunInput,
+    defaultValues: getAkunFormValues(akun),
     validators: {
       onSubmit: createAkunSchema,
     },
     onSubmit: async ({ value }) => {
-      await createAkunMutation.mutateAsync(value);
+      if (akun) {
+        await updateAkunMutation.mutateAsync({ id: akun.id, ...value });
+      } else {
+        await createAkunMutation.mutateAsync(value);
+      }
+
       onOpenChange(false);
     },
   });
 
-  function handleOpenChange(open: boolean) {
-    if (!open) {
-      form.reset();
+  function handleOpenChange(nextOpen: boolean) {
+    if (nextOpen) {
+      form.reset(getAkunFormValues(akun));
+    } else {
+      form.reset(getAkunFormValues(null));
     }
-    onOpenChange(open);
+    onOpenChange(nextOpen);
   }
+
+  const isPending =
+    createAkunMutation.isPending || updateAkunMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -57,9 +85,11 @@ export function DialogTambahAkun({
           }}
         >
           <DialogHeader>
-            <DialogTitle>Tambah Akun</DialogTitle>
+            <DialogTitle>{isEditing ? "Edit Akun" : "Tambah Akun"}</DialogTitle>
             <DialogDescription>
-              Isi formulir di bawah ini untuk menambahkan akun baru.
+              {isEditing
+                ? "Perbarui data akun di bawah ini."
+                : "Isi formulir di bawah ini untuk menambahkan akun baru."}
             </DialogDescription>
           </DialogHeader>
 
@@ -93,20 +123,18 @@ export function DialogTambahAkun({
             <Button
               variant="outline"
               type="button"
-              onClick={() => onOpenChange(false)}
-              disabled={createAkunMutation.isPending}
+              onClick={() => handleOpenChange(false)}
+              disabled={isPending}
             >
               Batal
             </Button>
             <Button
               type="submit"
-              disabled={createAkunMutation.isPending}
-              aria-disabled={createAkunMutation.isPending}
+              disabled={isPending}
+              aria-disabled={isPending}
             >
-              {createAkunMutation.isPending && (
-                <Spinner data-icon="inline-start" />
-              )}
-              Simpan
+              {isPending && <Spinner data-icon="inline-start" />}
+              {isEditing ? "Simpan Perubahan" : "Simpan"}
             </Button>
           </DialogFooter>
         </form>

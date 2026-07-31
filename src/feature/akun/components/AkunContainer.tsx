@@ -1,66 +1,101 @@
 import { useQuery } from "@tanstack/react-query";
-import type { PaginationState } from "@tanstack/react-table";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
+import { DialogHapus } from "#/components/dialog/DialogHapus";
+import { InputSearch } from "#/components/input/InputSearch";
 import { DataTable } from "#/components/table/DataTable";
 import { Button } from "#/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "#/components/ui/input-group";
 
+import { useDeleteAkunMutation } from "../mutations/delete-mutation";
 import { getAkunListQueryOptions } from "../queries/akun-query";
-import { columns } from "./columns";
+import type { FilterAkunInput } from "../server/model";
+import { akunColumns, type AkunRow } from "./columns";
 import { DialogTambahAkun } from "./DialogTambahAkun";
 
 export function AkunContainer() {
-  const [search, setSearch] = useState("");
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [query, setQuery] = useState<FilterAkunInput>();
+  const { data } = useQuery(getAkunListQueryOptions(query));
+
+  // --- Edit ---
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedAkun, setSelectedAkun] = useState<AkunRow | null>(null);
 
-  const { data, isLoading } = useQuery(
-    getAkunListQueryOptions({
-      search,
-      page: pagination.pageIndex + 1,
-      limit: pagination.pageSize,
-    }),
-  );
+  function handleEditDialogOpenChange(open: boolean) {
+    setIsDialogOpen(open);
+    if (!open) setSelectedAkun(null);
+  }
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  };
+  // --- Delete ---
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const deleteAkunMutation = useDeleteAkunMutation();
+
+  function handleDeleteDialogOpenChange(open: boolean) {
+    setIsDeleteOpen(open);
+    if (!open) setDeleteId(null);
+  }
+
+  async function handleDeleteConfirm() {
+    if (deleteId !== null) {
+      await deleteAkunMutation.mutateAsync([deleteId]);
+    }
+  }
+
+  // --- Columns ---
+  function handleEdit(akun: AkunRow) {
+    setSelectedAkun(akun);
+    setIsDialogOpen(true);
+  }
+
+  function handleDelete(akun: AkunRow) {
+    setDeleteId(akun.id);
+    setIsDeleteOpen(true);
+  }
+
+  function handleTambahClick() {
+    setSelectedAkun(null);
+    setIsDialogOpen(true);
+  }
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <InputGroup className="max-w-xs">
-          <InputGroupAddon align="inline-start">
-            <Search className="size-4" />
-          </InputGroupAddon>
-          <InputGroupInput
-            placeholder="Cari akun..."
-            value={search}
-            onChange={(e) => handleSearchChange(e.target.value)}
-          />
-        </InputGroup>
-        <div className="flex gap-2 bg-red-50">
-          Hello {JSON.stringify(isLoading)}
-        </div>
-        <Button onClick={() => setIsDialogOpen(true)}>
+        <InputSearch
+          onSearch={(search) =>
+            setQuery((current) => ({
+              ...current,
+              search: search || undefined,
+              page: 1,
+            }))
+          }
+        />
+        <Button onClick={handleTambahClick}>
           <Plus className="size-4" />
           Tambah Data
         </Button>
       </div>
 
-      <DataTable columns={columns} data={data?.data ?? []} />
+      <DataTable
+        columns={akunColumns}
+        data={data?.data ?? []}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
-      <DialogTambahAkun open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      <DialogTambahAkun
+        akun={selectedAkun}
+        open={isDialogOpen}
+        onOpenChange={handleEditDialogOpenChange}
+      />
+
+      <DialogHapus
+        itemName="Akun"
+        open={isDeleteOpen}
+        onOpenChange={handleDeleteDialogOpenChange}
+        onConfirm={handleDeleteConfirm}
+        isPending={deleteAkunMutation.isPending}
+      />
     </div>
   );
 }

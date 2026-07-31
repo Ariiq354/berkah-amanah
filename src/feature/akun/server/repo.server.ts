@@ -1,73 +1,88 @@
 import { and, desc, eq, ilike, inArray, or, type SQL } from "drizzle-orm";
+import { ResultAsync } from "neverthrow";
 
 import { db } from "#/database";
 import { akun } from "#/database/schema";
 
+import { AkunErrors } from "./errors";
 import type { CreateAkun, FilterAkun } from "./model";
 
 export abstract class AkunRepo {
-  static async getAkunList(query: FilterAkun) {
-    const conditions: (SQL<unknown> | undefined)[] = [];
+  static getAkunList(query: FilterAkun) {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const conditions: (SQL<unknown> | undefined)[] = [];
 
-    if (query.search) {
-      conditions.push(
-        or(
-          ilike(akun.namaAkun, `%${query.search}%`),
-          ilike(akun.kodeAkun, `%${query.search}%`),
-        ),
-      );
-    }
+        if (query.search) {
+          conditions.push(
+            or(
+              ilike(akun.namaAkun, `%${query.search}%`),
+              ilike(akun.kodeAkun, `%${query.search}%`),
+            ),
+          );
+        }
 
-    const qb = db
-      .select({
-        id: akun.id,
-        kodeAkun: akun.kodeAkun,
-        namaAkun: akun.namaAkun,
-        status: akun.status,
-      })
-      .from(akun)
-      .where(and(...conditions))
-      .orderBy(desc(akun.id));
+        if (query.status) {
+          conditions.push(eq(akun.status, query.status));
+        }
 
-    const offset = (query.page - 1) * query.limit;
-    const total = await db.$count(qb);
-    const data = await qb.limit(query.limit).offset(offset);
+        const qb = db
+          .select({
+            id: akun.id,
+            kodeAkun: akun.kodeAkun,
+            namaAkun: akun.namaAkun,
+            status: akun.status,
+          })
+          .from(akun)
+          .where(and(...conditions))
+          .orderBy(desc(akun.id));
 
-    return { total, data };
+        const offset = (query.page - 1) * query.limit;
+        const total = await db.$count(qb);
+        const data = await qb.limit(query.limit).offset(offset);
+
+        return { total, data };
+      })(),
+      AkunErrors.database,
+    );
   }
 
-  static async getAkunById(id: number) {
-    return await db.query.akun.findFirst({
-      where: {
-        id,
-      },
-    });
+  static getAkunById(id: number) {
+    return ResultAsync.fromPromise(
+      db.query.akun.findFirst({ where: { id } }),
+      AkunErrors.database,
+    );
   }
 
-  static async getAkunByKode(kodeAkun: string) {
-    return await db.query.akun.findFirst({
-      where: {
-        kodeAkun,
-      },
-    });
+  static getAkunByKode(kodeAkun: string) {
+    return ResultAsync.fromPromise(
+      db.query.akun.findFirst({ where: { kodeAkun } }),
+      AkunErrors.database,
+    );
   }
 
-  static async createAkun(data: CreateAkun) {
-    await db.insert(akun).values(data);
+  static createAkun(data: CreateAkun) {
+    return ResultAsync.fromPromise(
+      db.insert(akun).values(data),
+      AkunErrors.database,
+    );
   }
 
-  static async updateAkun(id: number, data: Partial<CreateAkun>) {
-    return await db
-      .update(akun)
-      .set(data)
-      .where(eq(akun.id, id))
-      .returning({ id: akun.id });
+  static updateAkun(id: number, data: Partial<CreateAkun>) {
+    return ResultAsync.fromPromise(
+      db
+        .update(akun)
+        .set(data)
+        .where(eq(akun.id, id))
+        .returning({ id: akun.id }),
+      AkunErrors.database,
+    );
   }
 
-  static async deleteAkun(ids: number[]) {
-    return await db
-      .delete(akun)
-      .where(inArray(akun.id, ids))
-      .returning({ id: akun.id });
+  static deleteAkun(ids: number[]) {
+    return ResultAsync.fromPromise(
+      db.delete(akun).where(inArray(akun.id, ids)).returning({ id: akun.id }),
+      AkunErrors.database,
+    );
   }
 }

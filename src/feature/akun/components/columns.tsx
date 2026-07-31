@@ -1,23 +1,10 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-
-import { Button } from "#/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "#/components/ui/dropdown-menu";
 
 import type { getAkunListFn } from "../server/fn";
 
-export type AkunRow = Awaited<
-  ReturnType<typeof getAkunListFn>
->["data"][number];
+export type AkunRow = Awaited<ReturnType<typeof getAkunListFn>>["data"][number];
 
-export const columns: ColumnDef<AkunRow>[] = [
+export const akunColumns: ColumnDef<AkunRow>[] = [
   {
     accessorKey: "kodeAkun",
     header: "Kode Akun",
@@ -41,33 +28,6 @@ export const columns: ColumnDef<AkunRow>[] = [
         >
           {status ? "Aktif" : "Non-Aktif"}
         </span>
-      );
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const akun = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={<Button variant="ghost" className="h-8 w-8 p-0" />}
-          >
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(akun.kodeAkun)}
-              >
-                Salin Kode Akun
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
       );
     },
   },

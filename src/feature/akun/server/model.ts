@@ -5,7 +5,7 @@ import { paginationSchema } from "#/lib/schema";
 export const createAkunSchema = z.object({
   kodeAkun: z.string().min(1, "Kode akun wajib diisi"),
   namaAkun: z.string().min(1, "Nama akun wajib diisi"),
-  status: z.boolean().default(true),
+  status: z.boolean(),
 });
 
 export type CreateAkun = z.infer<typeof createAkunSchema>;
@@ -18,8 +18,7 @@ export const updateAkunSchema = createAkunSchema.partial().extend({
 export type UpdateAkun = z.infer<typeof updateAkunSchema>;
 export type UpdateAkunInput = z.input<typeof updateAkunSchema>;
 
-export const filterAkunSchema = z.object({
-  ...paginationSchema.def.shape,
+export const filterAkunSchema = paginationSchema.extend({
   search: z.string().optional(),
   status: z.boolean().optional(),
 });

@@ -1,48 +1,54 @@
+import { errAsync, ok } from "neverthrow";
+
+import { AkunErrors } from "./errors";
 import type { CreateAkun, FilterAkun, UpdateAkun } from "./model";
 import { AkunRepo } from "./repo.server";
 
 export abstract class AkunService {
-  static async getAkunList(filters: FilterAkun) {
-    return await AkunRepo.getAkunList(filters);
+  static getAkunList(filters: FilterAkun) {
+    return AkunRepo.getAkunList(filters);
   }
 
-  static async getAkunById(id: number) {
-    const data = await AkunRepo.getAkunById(id);
-    if (!data) {
-      throw new Error("Akun tidak ditemukan");
-    }
-    return data;
+  static createAkun(data: CreateAkun) {
+    return AkunRepo.getAkunByKode(data.kodeAkun).andThen((existing) => {
+      if (existing) {
+        return errAsync(AkunErrors.kodeUsed());
+      }
+
+      return AkunRepo.createAkun(data);
+    });
   }
 
-  static async createAkun(data: CreateAkun) {
-    const existing = await AkunRepo.getAkunByKode(data.kodeAkun);
-    if (existing) {
-      throw new Error("Kode akun sudah digunakan");
-    }
-    return await AkunRepo.createAkun(data);
-  }
-
-  static async updateAkun(data: UpdateAkun) {
+  static updateAkun(data: UpdateAkun) {
     const { id, ...updateData } = data;
 
-    if (updateData.kodeAkun) {
-      const codeTaken = await AkunRepo.getAkunByKode(updateData.kodeAkun);
-      if (codeTaken && codeTaken.id !== id) {
-        throw new Error("Kode akun sudah digunakan");
-      }
+    const updateAndCheck = () =>
+      AkunRepo.updateAkun(id, updateData).andThen((res) => {
+        if (res.length === 0) {
+          return errAsync(AkunErrors.notFound());
+        }
+        return ok(undefined);
+      });
+
+    if (!updateData.kodeAkun) {
+      return updateAndCheck();
     }
 
-    const res = await AkunRepo.updateAkun(id, updateData);
-    if (res.length === 0) {
-      throw new Error("Akun tidak ditemukan");
-    }
+    return AkunRepo.getAkunByKode(updateData.kodeAkun).andThen((existing) => {
+      if (existing && existing.id !== id) {
+        return errAsync(AkunErrors.kodeUsed());
+      }
+
+      return updateAndCheck();
+    });
   }
 
-  static async deleteAkun(ids: number[]) {
-    const res = await AkunRepo.deleteAkun(ids);
-    if (res.length === 0) {
-      throw new Error("Akun tidak ditemukan");
-    }
-    return res;
+  static deleteAkun(ids: number[]) {
+    return AkunRepo.deleteAkun(ids).andThen((res) => {
+      if (res.length === 0) {
+        return errAsync(AkunErrors.notFound());
+      }
+      return ok(undefined);
+    });
   }
 }
