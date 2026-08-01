@@ -1,7 +1,7 @@
 import { KelompokRepo } from "./repo.server";
 
-export abstract class KelompokService {
-  static async getOptionsKelompok() {
+export const KelompokService = {
+  async getOptionsKelompok() {
     const kelompok = await KelompokRepo.getOptionsKelompok();
 
     const data = kelompok.map((item) => ({
@@ -10,5 +10,5 @@ export abstract class KelompokService {
     }));
 
     return data;
-  }
-}
+  },
+};

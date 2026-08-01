@@ -40,12 +40,7 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [
-    username(),
-    adminPlugins({
-      defaultRole: "daerah",
-    }),
-  ],
+  plugins: [username(), adminPlugins()],
 });
 
 export type UserWithId = Omit<typeof auth.$Infer.Session.user, "id"> & {

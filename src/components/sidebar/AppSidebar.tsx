@@ -38,7 +38,7 @@ const navMain: NavGroup[] = [
   },
 
   {
-    title: "Monitoring",
+    title: "Operasional",
     items: [
       {
         title: "Monitoring Simpanan",
@@ -81,12 +81,6 @@ const navMain: NavGroup[] = [
         url: "#",
         icon: ChartNoAxesCombined,
       },
-    ],
-  },
-
-  {
-    title: "Transaksi",
-    items: [
       {
         title: "Transaksi",
         icon: Wallet,
@@ -139,12 +133,6 @@ const navMain: NavGroup[] = [
           },
         ],
       },
-    ],
-  },
-
-  {
-    title: "Persetujuan",
-    items: [
       {
         title: "Persetujuan",
         icon: BadgeCheck,

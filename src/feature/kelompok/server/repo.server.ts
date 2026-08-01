@@ -1,7 +1,7 @@
 import { db } from "#/database";
 
-export abstract class KelompokRepo {
-  static async getOptionsKelompok() {
+export const KelompokRepo = {
+  async getOptionsKelompok() {
     return await db.query.kelompok.findMany();
-  }
-}
+  },
+};

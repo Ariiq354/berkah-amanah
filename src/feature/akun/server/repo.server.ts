@@ -7,8 +7,8 @@ import { akun } from "#/database/schema";
 import { AkunErrors } from "./errors";
 import type { CreateAkun, FilterAkun } from "./model";
 
-export abstract class AkunRepo {
-  static getAkunList(query: FilterAkun) {
+export const AkunRepo = {
+  getAkunList(query: FilterAkun) {
     return ResultAsync.fromPromise(
       (async () => {
         const conditions: (SQL<unknown> | undefined)[] = [];
@@ -45,30 +45,30 @@ export abstract class AkunRepo {
       })(),
       AkunErrors.database,
     );
-  }
+  },
 
-  static getAkunById(id: number) {
+  getAkunById(id: number) {
     return ResultAsync.fromPromise(
       db.query.akun.findFirst({ where: { id } }),
       AkunErrors.database,
     );
-  }
+  },
 
-  static getAkunByKode(kodeAkun: string) {
+  getAkunByKode(kodeAkun: string) {
     return ResultAsync.fromPromise(
       db.query.akun.findFirst({ where: { kodeAkun } }),
       AkunErrors.database,
     );
-  }
+  },
 
-  static createAkun(data: CreateAkun) {
+  createAkun(data: CreateAkun) {
     return ResultAsync.fromPromise(
       db.insert(akun).values(data),
       AkunErrors.database,
     );
-  }
+  },
 
-  static updateAkun(id: number, data: Partial<CreateAkun>) {
+  updateAkun(id: number, data: Partial<CreateAkun>) {
     return ResultAsync.fromPromise(
       db
         .update(akun)
@@ -77,12 +77,12 @@ export abstract class AkunRepo {
         .returning({ id: akun.id }),
       AkunErrors.database,
     );
-  }
+  },
 
-  static deleteAkun(ids: number[]) {
+  deleteAkun(ids: number[]) {
     return ResultAsync.fromPromise(
       db.delete(akun).where(inArray(akun.id, ids)).returning({ id: akun.id }),
       AkunErrors.database,
     );
-  }
-}
+  },
+};

@@ -4,12 +4,12 @@ import { AkunErrors } from "./errors";
 import type { CreateAkun, FilterAkun, UpdateAkun } from "./model";
 import { AkunRepo } from "./repo.server";
 
-export abstract class AkunService {
-  static getAkunList(filters: FilterAkun) {
+export const AkunService = {
+  getAkunList(filters: FilterAkun) {
     return AkunRepo.getAkunList(filters);
-  }
+  },
 
-  static createAkun(data: CreateAkun) {
+  createAkun(data: CreateAkun) {
     return AkunRepo.getAkunByKode(data.kodeAkun).andThen((existing) => {
       if (existing) {
         return errAsync(AkunErrors.kodeUsed());
@@ -17,9 +17,9 @@ export abstract class AkunService {
 
       return AkunRepo.createAkun(data);
     });
-  }
+  },
 
-  static updateAkun(data: UpdateAkun) {
+  updateAkun(data: UpdateAkun) {
     const { id, ...updateData } = data;
 
     const updateAndCheck = () =>
@@ -41,14 +41,14 @@ export abstract class AkunService {
 
       return updateAndCheck();
     });
-  }
+  },
 
-  static deleteAkun(ids: number[]) {
+  deleteAkun(ids: number[]) {
     return AkunRepo.deleteAkun(ids).andThen((res) => {
       if (res.length === 0) {
         return errAsync(AkunErrors.notFound());
       }
       return ok(undefined);
     });
-  }
-}
+  },
+};

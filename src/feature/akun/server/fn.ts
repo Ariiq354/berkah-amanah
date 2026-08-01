@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { ensureSession } from "#/lib/auth-function";
+import { ensureAdmin } from "#/lib/auth-function";
 import { deleteSchema } from "#/lib/schema";
 
 import { createAkunSchema, filterAkunSchema, updateAkunSchema } from "./model";
@@ -9,7 +9,7 @@ import { AkunService } from "./service.server";
 export const getAkunListFn = createServerFn({ method: "GET" })
   .validator(filterAkunSchema)
   .handler(async ({ data: filters }) => {
-    await ensureSession();
+    await ensureAdmin();
 
     const res = await AkunService.getAkunList(filters);
 
@@ -24,7 +24,7 @@ export const getAkunListFn = createServerFn({ method: "GET" })
 export const createAkunFn = createServerFn({ method: "POST" })
   .validator(createAkunSchema)
   .handler(async ({ data }) => {
-    await ensureSession();
+    await ensureAdmin();
 
     const res = await AkunService.createAkun(data);
     return res.match(
@@ -46,7 +46,7 @@ export const createAkunFn = createServerFn({ method: "POST" })
 export const updateAkunFn = createServerFn({ method: "POST" })
   .validator(updateAkunSchema)
   .handler(async ({ data }) => {
-    await ensureSession();
+    await ensureAdmin();
 
     const res = await AkunService.updateAkun(data);
 
@@ -71,7 +71,7 @@ export const updateAkunFn = createServerFn({ method: "POST" })
 export const deleteAkunFn = createServerFn({ method: "POST" })
   .validator(deleteSchema)
   .handler(async ({ data: ids }) => {
-    await ensureSession();
+    await ensureAdmin();
 
     const res = await AkunService.deleteAkun(ids);
     return res.match(
