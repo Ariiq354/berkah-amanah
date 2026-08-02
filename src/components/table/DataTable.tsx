@@ -21,6 +21,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Skeleton } from "../ui/skeleton";
 import {
   Table,
   TableBody,
@@ -47,6 +48,7 @@ interface DataTableProps<TData, TValue> {
   selectable?: boolean;
   onEdit?: (row: TData) => void;
   deleteConfig?: DeleteConfig<TData>;
+  isLoading?: boolean;
 }
 
 function createSelectColumn<TData>(): ColumnDef<TData, unknown> {
@@ -56,8 +58,7 @@ function createSelectColumn<TData>(): ColumnDef<TData, unknown> {
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         indeterminate={
-          !table.getIsAllPageRowsSelected() &&
-          table.getIsSomePageRowsSelected()
+          !table.getIsAllPageRowsSelected() && table.getIsSomePageRowsSelected()
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Pilih semua"
@@ -125,6 +126,7 @@ export function DataTable<TData, TValue>({
   selectable = false,
   onEdit,
   deleteConfig,
+  isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -220,7 +222,26 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              Array.from({ length: pageSize }).map((_, rowIndex) => (
+                <TableRow key={`skeleton-row-${rowIndex}`}>
+                  {allColumns.map((col, colIndex) => {
+                    const colId = (col as { id?: string }).id;
+                    return (
+                      <TableCell key={`skeleton-cell-${colIndex}`}>
+                        {colId === "select" ? (
+                          <Skeleton className="size-4 rounded" />
+                        ) : colId === "actions" ? (
+                          <Skeleton className="size-8 rounded-md" />
+                        ) : (
+                          <Skeleton className="h-5 w-full max-w-[80%]" />
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -240,7 +261,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={allColumns.length}
-                  className="h-24 text-center"
+                  className="text-muted-foreground h-24 text-center"
                 >
                   Tidak ada data.
                 </TableCell>

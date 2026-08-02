@@ -17,7 +17,7 @@ export function AkunContainer() {
     page: 1,
     limit: 10,
   });
-  const { data } = useQuery(getAkunListQueryOptions(query));
+  const { data, isLoading } = useQuery(getAkunListQueryOptions(query));
 
   // --- Edit ---
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -66,6 +66,7 @@ export function AkunContainer() {
         rowCount={data?.total ?? 0}
         pageIndex={query.page - 1}
         pageSize={query.limit}
+        isLoading={isLoading}
         onPaginationChange={(pageIndex, pageSize) =>
           setQuery((current) => ({
             ...current,
