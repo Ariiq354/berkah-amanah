@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-import { DialogHapus } from "#/components/dialog/DialogHapus";
 import { InputSearch } from "#/components/input/InputSearch";
 import { DataTable } from "#/components/table/DataTable";
 import { Button } from "#/components/ui/button";
@@ -30,30 +29,12 @@ export function AkunContainer() {
   }
 
   // --- Delete ---
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
   const deleteAkunMutation = useDeleteAkunMutation();
-
-  function handleDeleteDialogOpenChange(open: boolean) {
-    setIsDeleteOpen(open);
-    if (!open) setDeleteId(null);
-  }
-
-  async function handleDeleteConfirm() {
-    if (deleteId !== null) {
-      await deleteAkunMutation.mutateAsync([deleteId]);
-    }
-  }
 
   // --- Columns ---
   function handleEdit(akun: AkunRow) {
     setSelectedAkun(akun);
     setIsDialogOpen(true);
-  }
-
-  function handleDelete(akun: AkunRow) {
-    setDeleteId(akun.id);
-    setIsDeleteOpen(true);
   }
 
   function handleTambahClick() {
@@ -93,21 +74,20 @@ export function AkunContainer() {
           }))
         }
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        selectable
+        deleteConfig={{
+          itemName: "Akun",
+          onConfirm: async (rows) => {
+            await deleteAkunMutation.mutateAsync(rows.map((row) => row.id));
+          },
+          isPending: deleteAkunMutation.isPending,
+        }}
       />
 
       <DialogTambahAkun
         akun={selectedAkun}
         open={isDialogOpen}
         onOpenChange={handleEditDialogOpenChange}
-      />
-
-      <DialogHapus
-        itemName="Akun"
-        open={isDeleteOpen}
-        onOpenChange={handleDeleteDialogOpenChange}
-        onConfirm={handleDeleteConfirm}
-        isPending={deleteAkunMutation.isPending}
       />
     </div>
   );
