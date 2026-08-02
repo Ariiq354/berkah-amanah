@@ -1,10 +1,11 @@
-import { queryOptions } from "@tanstack/react-query";
+import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 
 import { getAkunListFn } from "../server/fn";
-import type { FilterAkunInput } from "../server/model";
+import type { FilterAkun } from "../server/model";
 
-export const getAkunListQueryOptions = (query: FilterAkunInput = {}) =>
+export const getAkunListQueryOptions = (query: FilterAkun) =>
   queryOptions({
     queryKey: ["akun", query],
     queryFn: () => getAkunListFn({ data: query }),
+    placeholderData: keepPreviousData,
   });

@@ -24,4 +24,3 @@ export const filterAkunSchema = paginationSchema.extend({
 });
 
 export type FilterAkun = z.infer<typeof filterAkunSchema>;
-export type FilterAkunInput = z.input<typeof filterAkunSchema>;

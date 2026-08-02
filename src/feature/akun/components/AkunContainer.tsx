@@ -9,12 +9,15 @@ import { Button } from "#/components/ui/button";
 
 import { useDeleteAkunMutation } from "../mutations/delete-mutation";
 import { getAkunListQueryOptions } from "../queries/akun-query";
-import type { FilterAkunInput } from "../server/model";
+import type { FilterAkun } from "../server/model";
 import { akunColumns, type AkunRow } from "./columns";
 import { DialogTambahAkun } from "./DialogTambahAkun";
 
 export function AkunContainer() {
-  const [query, setQuery] = useState<FilterAkunInput>();
+  const [query, setQuery] = useState<FilterAkun>({
+    page: 1,
+    limit: 10,
+  });
   const { data } = useQuery(getAkunListQueryOptions(query));
 
   // --- Edit ---
@@ -77,8 +80,18 @@ export function AkunContainer() {
       </div>
 
       <DataTable
-        columns={akunColumns}
         data={data?.data ?? []}
+        columns={akunColumns}
+        rowCount={data?.total ?? 0}
+        pageIndex={query.page - 1}
+        pageSize={query.limit}
+        onPaginationChange={(pageIndex, pageSize) =>
+          setQuery((current) => ({
+            ...current,
+            page: pageIndex + 1,
+            limit: pageSize,
+          }))
+        }
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
