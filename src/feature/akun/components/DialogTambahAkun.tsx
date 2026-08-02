@@ -9,11 +9,17 @@ import {
   DialogTitle,
 } from "#/components/ui/dialog";
 import { FieldGroup } from "#/components/ui/field";
+import { SelectGroup, SelectItem, SelectLabel } from "#/components/ui/select";
 import { Spinner } from "#/components/ui/spinner";
 
 import { useCreateAkunMutation } from "../mutations/create-mutation";
 import { useUpdateAkunMutation } from "../mutations/update-mutation";
-import { createAkunSchema, type CreateAkunInput } from "../server/model";
+import {
+  createAkunSchema,
+  KATEGORI_AKUN_VALUES,
+  NORMAL_BALANCE_VALUES,
+  type CreateAkunInput,
+} from "../server/model";
 import type { AkunRow } from "./columns";
 
 interface DialogTambahAkunProps {
@@ -27,14 +33,18 @@ function getAkunFormValues(akun: AkunRow | null): CreateAkunInput {
     return {
       kodeAkun: akun.kodeAkun,
       namaAkun: akun.namaAkun,
-      status: akun.status,
+      kategori: akun.kategori,
+      normalBalance: akun.normalBalance,
+      isActive: akun.isActive,
     };
   }
 
   return {
     kodeAkun: "",
     namaAkun: "",
-    status: true,
+    kategori: null,
+    normalBalance: null,
+    isActive: true,
   };
 }
 
@@ -114,7 +124,62 @@ export function DialogTambahAkun({
               )}
             </form.AppField>
 
-            <form.AppField name="status">
+            <form.AppField
+              name="kategori"
+              listeners={{
+                onChange: ({ value }) => {
+                  if (value === "Aktiva" || value === "Biaya") {
+                    form.setFieldValue("normalBalance", "Debit");
+                  } else if (value === "Pasiva" || value === "Pendapatan") {
+                    form.setFieldValue("normalBalance", "Kredit");
+                  }
+                },
+              }}
+            >
+              {(field) => (
+                <field.Select
+                  label="Kategori"
+                  placeholder="Pilih Kategori"
+                  items={KATEGORI_AKUN_VALUES.map((val) => ({
+                    value: val,
+                    label: val,
+                  }))}
+                >
+                  <SelectGroup>
+                    <SelectLabel>Kategori Akun</SelectLabel>
+                    {KATEGORI_AKUN_VALUES.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </field.Select>
+              )}
+            </form.AppField>
+
+            <form.AppField name="normalBalance">
+              {(field) => (
+                <field.Select
+                  label="Normal Balance"
+                  placeholder="Pilih Normal Balance"
+                  items={NORMAL_BALANCE_VALUES.map((val) => ({
+                    value: val,
+                    label: val,
+                  }))}
+                >
+                  <SelectGroup>
+                    <SelectLabel>Normal Balance</SelectLabel>
+                    {NORMAL_BALANCE_VALUES.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </field.Select>
+              )}
+            </form.AppField>
+
+            <form.AppField name="isActive">
               {(field) => <field.Checkbox label="Status Aktif" />}
             </form.AppField>
           </FieldGroup>

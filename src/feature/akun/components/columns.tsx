@@ -16,13 +16,33 @@ export const akunColumns: ColumnDef<AkunRow>[] = [
     header: "Nama Akun",
   },
   {
-    accessorKey: "status",
+    accessorKey: "kategori",
+    header: "Kategori",
+    cell: ({ row }) => {
+      const kategori = row.original.kategori;
+      return kategori ? <Badge variant="outline">{kategori}</Badge> : "-";
+    },
+  },
+  {
+    accessorKey: "normalBalance",
+    header: "Normal Balance",
+    cell: ({ row }) => {
+      const normalBalance = row.original.normalBalance;
+      return normalBalance ? (
+        <Badge variant="outline">{normalBalance}</Badge>
+      ) : (
+        "-"
+      );
+    },
+  },
+  {
+    accessorKey: "isActive",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as boolean;
+      const isActive = row.original.isActive;
       return (
-        <Badge variant={status ? "default" : "secondary"}>
-          {status ? "Aktif" : "Non-Aktif"}
+        <Badge variant={isActive ? "default" : "secondary"}>
+          {isActive ? "Aktif" : "Non-Aktif"}
         </Badge>
       );
     },

@@ -22,8 +22,16 @@ export const AkunRepo = {
           );
         }
 
-        if (query.status) {
-          conditions.push(eq(akun.status, query.status));
+        if (query.kategori) {
+          conditions.push(eq(akun.kategori, query.kategori));
+        }
+
+        if (query.normalBalance) {
+          conditions.push(eq(akun.normalBalance, query.normalBalance));
+        }
+
+        if (query.isActive !== undefined) {
+          conditions.push(eq(akun.isActive, query.isActive));
         }
 
         const qb = db
@@ -31,7 +39,9 @@ export const AkunRepo = {
             id: akun.id,
             kodeAkun: akun.kodeAkun,
             namaAkun: akun.namaAkun,
-            status: akun.status,
+            kategori: akun.kategori,
+            normalBalance: akun.normalBalance,
+            isActive: akun.isActive,
           })
           .from(akun)
           .where(and(...conditions))

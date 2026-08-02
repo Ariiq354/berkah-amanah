@@ -3,12 +3,19 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import { InputSearch } from "#/components/input/InputSearch";
+import { DeletableSelect } from "#/components/select/DeletableSelect";
 import { DataTable } from "#/components/table/DataTable";
 import { Button } from "#/components/ui/button";
 
 import { useDeleteAkunMutation } from "../mutations/delete-mutation";
 import { getAkunListQueryOptions } from "../queries/akun-query";
-import type { FilterAkun } from "../server/model";
+import {
+  KATEGORI_AKUN_VALUES,
+  NORMAL_BALANCE_VALUES,
+  type FilterAkun,
+  type KategoriAkun,
+  type NormalBalance,
+} from "../server/model";
 import { akunColumns, type AkunRow } from "./columns";
 import { DialogTambahAkun } from "./DialogTambahAkun";
 
@@ -45,15 +52,47 @@ export function AkunContainer() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <InputSearch
-          onSearch={(search) =>
-            setQuery((current) => ({
-              ...current,
-              search: search || undefined,
-              page: 1,
-            }))
-          }
-        />
+        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+          <InputSearch
+            onSearch={(search) =>
+              setQuery((current) => ({
+                ...current,
+                search: search || undefined,
+                page: 1,
+              }))
+            }
+          />
+          <DeletableSelect
+            placeholder="Semua Kategori"
+            title="Kategori Akun"
+            items={KATEGORI_AKUN_VALUES}
+            value={query.kategori}
+            onValueChange={(val) =>
+              setQuery((current) => ({
+                ...current,
+                kategori: val as KategoriAkun | undefined,
+                page: 1,
+              }))
+            }
+            className="w-full sm:w-44"
+          />
+
+          <DeletableSelect
+            placeholder="Semua Balance"
+            title="Normal Balance"
+            items={NORMAL_BALANCE_VALUES}
+            value={query.normalBalance}
+            onValueChange={(val) =>
+              setQuery((current) => ({
+                ...current,
+                normalBalance: val as NormalBalance | undefined,
+                page: 1,
+              }))
+            }
+            className="w-full sm:w-44"
+          />
+        </div>
+
         <Button onClick={handleTambahClick}>
           <Plus className="size-4" />
           Tambah Data
